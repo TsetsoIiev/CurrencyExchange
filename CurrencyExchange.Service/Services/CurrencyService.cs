@@ -2,7 +2,18 @@
 
 namespace CurrencyExchange.Service.Services
 {
-    class CurrencyService : ICurrencyService
+    public class CurrencyService : ICurrencyService
     {
+        private readonly IRequestService requestService;
+
+        public CurrencyService(IRequestService requestService)
+        {
+            this.requestService = requestService;
+        }
+
+        public string Ok()
+        {
+            return "Ok";
+        }
     }
 }

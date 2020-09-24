@@ -1,7 +1,7 @@
 ﻿namespace CurrencyExchange.Service.Interfaces
 {
-    public interface ICurrencyService
+    public interface IRequestService
     {
-        string Ok();
+
     }
 }

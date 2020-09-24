@@ -17,13 +17,7 @@ namespace CurrencyExchange.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok();
-        }
-
-        [HttpGet]
-        public IActionResult Get(string currency)
-        {
-            return Ok(currency);
+            return Ok(currencyService.Ok());
         }
     }
 }

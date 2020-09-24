@@ -1,3 +1,5 @@
+using CurrencyExchange.Service.Interfaces;
+using CurrencyExchange.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +23,9 @@ namespace CurrencyExchange.API
             services.AddControllers();
 
             services.AddSwaggerGen();
+
+            services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IRequestService, RequestService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
