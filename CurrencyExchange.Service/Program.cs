@@ -1,7 +1,4 @@
-﻿using CurrencyExchange.Service.Interfaces;
-using CurrencyExchange.Service.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 
 namespace CurrencyExchange.Service
 {
