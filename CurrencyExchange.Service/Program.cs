@@ -1,9 +1,12 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace CurrencyExchange.Service
 {
     public class Program
     {
+        public static IConfigurationRoot configuration;
+
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -11,5 +14,6 @@ namespace CurrencyExchange.Service
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args);
+
     }
 }
