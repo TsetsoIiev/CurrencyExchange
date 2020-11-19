@@ -25,6 +25,7 @@ namespace CurrencyExchange.API
             services.AddSwaggerGen();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IMongoService, MongoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,13 +36,6 @@ namespace CurrencyExchange.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v.1");
-            });
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -51,6 +45,13 @@ namespace CurrencyExchange.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v.1");
             });
         }
     }

@@ -1,17 +1,25 @@
 ﻿using CurrencyExchange.Service.Interfaces;
 using CurrencyExchange.Service.Models;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using RestSharp;
+using System;
 using System.Net;
 
 namespace CurrencyExchange.Service.Services
 {
     public class CurrencyService : ICurrencyService
     {
+        private readonly IMongoService mongoService;
+
+        public CurrencyService(IMongoService mongoService)
+        {
+            this.mongoService = mongoService;
+        }
         public double GetRates(string baseCurrency, string toCurrency, double ammount)
         {
             var client = new RestClient($"{AppSettings.ApiEndpoint}{AppSettings.ApiEndpointLatest}");
-            
+
             var request = new RestRequest(Method.GET);
             request.AddQueryParameter("access_key", AppSettings.ApiAccessKey);
 
@@ -29,10 +37,15 @@ namespace CurrencyExchange.Service.Services
                 var rate = toCurrencyRateValue / baseCurrencyRateValue;
                 var finalAmmount = rate * ammount;
 
-                return finalAmmount;
+                return Math.Round(finalAmmount, 2);
             }
 
             return 0;
+        }
+
+        public double[] GetRatesForPeriod(string currency, DateTime from, DateTime to)
+        {
+            throw new NotImplementedException();
         }
     }
 }

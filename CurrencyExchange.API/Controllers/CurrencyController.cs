@@ -1,5 +1,7 @@
 ﻿using CurrencyExchange.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace CurrencyExchange.API.Controllers
 {
@@ -8,16 +10,26 @@ namespace CurrencyExchange.API.Controllers
     public class CurrencyController : ControllerBase
     {
         private readonly ICurrencyService currencyService;
+        private readonly IMongoService mongoService;
 
-        public CurrencyController(ICurrencyService currencyService)
+        public CurrencyController(ICurrencyService currencyService, IMongoService mongoService)
         {
             this.currencyService = currencyService;
+            this.mongoService = mongoService;
         }
 
         [HttpGet]
+        [Route("[action]")]
         public IActionResult GetRatesByCurrency(string baseCurrency, string nextCurrency, double quantity)
         {
             return Ok(currencyService.GetRates(baseCurrency, nextCurrency, quantity));
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult GetRatesByDate(DateTime from, DateTime to)
+        {
+            return Ok(mongoService.GetCurrenciesForPeriod(from, to));
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 
 namespace CurrencyExchange.Service.Models
 {
-    internal class Currencies
+    public class Currencies : BsonDocument
     {
         public bool Success { get; set; }
 
