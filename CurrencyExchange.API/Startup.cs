@@ -25,7 +25,6 @@ namespace CurrencyExchange.API
             services.AddSwaggerGen();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
-            services.AddScoped<IRequestService, RequestService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

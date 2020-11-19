@@ -2,6 +2,6 @@
 {
     public interface ICurrencyService
     {
-        string Ok();
+        double GetRates(string baseCurrency, string toCurrency, double ammount);
     }
 }

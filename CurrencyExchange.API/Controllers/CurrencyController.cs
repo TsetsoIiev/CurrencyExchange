@@ -15,9 +15,9 @@ namespace CurrencyExchange.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetRatesByCurrency(string baseCurrency, string nextCurrency, double quantity)
         {
-            return Ok(currencyService.Ok());
+            return Ok(currencyService.GetRates(baseCurrency, nextCurrency, quantity));
         }
     }
 }
