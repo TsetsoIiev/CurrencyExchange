@@ -7,5 +7,7 @@ namespace CurrencyExchange.Service.Interfaces
         double GetRates(string baseCurrency, string toCurrency, double ammount);
 
         double[] GetRatesForPeriod(string currency, DateTime from, DateTime to);
+
+        string[] GetCurrencies();
     }
 }

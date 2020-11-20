@@ -31,5 +31,12 @@ namespace CurrencyExchange.API.Controllers
         {
             return Ok(mongoService.GetCurrenciesForPeriod(from, to));
         }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult GetCurrencies()
+        {
+            return Ok(currencyService.GetCurrencies());
+        }
     }
 }

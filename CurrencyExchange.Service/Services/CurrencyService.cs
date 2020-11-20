@@ -16,6 +16,12 @@ namespace CurrencyExchange.Service.Services
         {
             this.mongoService = mongoService;
         }
+
+        public string[] GetCurrencies()
+        {
+            throw new NotImplementedException();
+        }
+
         public double GetRates(string baseCurrency, string toCurrency, double ammount)
         {
             var client = new RestClient($"{AppSettings.ApiEndpoint}{AppSettings.ApiEndpointLatest}");
