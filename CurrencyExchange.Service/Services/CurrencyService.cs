@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Linq;
 using System.Net;
 
 namespace CurrencyExchange.Service.Services
@@ -19,12 +20,7 @@ namespace CurrencyExchange.Service.Services
 
         public string[] GetCurrencies()
         {
-            return new string[]
-            {
-                "USD",
-                "EUR",
-                "BGN"
-            };
+            return new Rates().GetType().GetProperties().Select(x => x.Name).ToArray();
         }
 
         public double GetRates(string baseCurrency, string toCurrency, double ammount)
