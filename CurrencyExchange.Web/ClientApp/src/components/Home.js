@@ -84,7 +84,7 @@ export class Home extends Component {
             <TextField
               id="ammount"
               label="Ammount"
-              required="true"
+              required={true}
               onChange={this.handleAmmountChange}
             />
           </div>
@@ -98,7 +98,7 @@ export class Home extends Component {
               id="targetCurrency"
               labelId="targetCurrencyLabel"
               className="dropdown"
-              required="true"
+              required={true}
               value={this.state.targetCurrency}
               onChange={this.handleTargetCurrencyChange}
             >
