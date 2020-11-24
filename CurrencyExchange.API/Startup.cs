@@ -10,6 +10,7 @@ namespace CurrencyExchange.API
 {
     public class Startup
     {
+        private readonly string CorsPolicyName = "Default";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -21,6 +22,18 @@ namespace CurrencyExchange.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CorsPolicyName,
+                                builder =>
+                                {
+                                    builder
+                                        .AllowAnyOrigin()
+                                        .AllowAnyMethod()
+                                        .AllowAnyHeader();
+                                });
+            });
 
             services.AddSwaggerGen();
 
@@ -40,11 +53,15 @@ namespace CurrencyExchange.API
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints
+                    .MapControllers()
+                    .RequireCors(CorsPolicyName);
             });
 
             app.UseSwagger();

@@ -1,0 +1,15 @@
+﻿.form-control {
+    width: 20%;
+    padding: 10px;
+    display: flex;
+    margin-right: 5%;
+}
+
+.dropdown {
+    min-width: 148px;
+}
+
+.space-between {
+    padding-right: 5%;
+    padding-left: 5%;
+}

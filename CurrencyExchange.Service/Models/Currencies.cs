@@ -3,7 +3,7 @@ using System;
 
 namespace CurrencyExchange.Service.Models
 {
-    public class Currencies : BsonDocument
+    public class Currencies
     {
         public bool Success { get; set; }
 

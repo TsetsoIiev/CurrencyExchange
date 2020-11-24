@@ -1,12 +1,13 @@
 ﻿using CurrencyExchange.Service.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace CurrencyExchange.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [DisableCors]
     public class CurrencyController : ControllerBase
     {
         private readonly ICurrencyService currencyService;

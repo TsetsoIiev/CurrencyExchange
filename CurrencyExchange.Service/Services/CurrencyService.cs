@@ -19,7 +19,12 @@ namespace CurrencyExchange.Service.Services
 
         public string[] GetCurrencies()
         {
-            throw new NotImplementedException();
+            return new string[]
+            {
+                "USD",
+                "EUR",
+                "BGN"
+            };
         }
 
         public double GetRates(string baseCurrency, string toCurrency, double ammount)
@@ -32,7 +37,7 @@ namespace CurrencyExchange.Service.Services
             var response = client.Execute(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                var rates = JsonConvert.DeserializeObject<Currencies>(response.Content).Rates;
+                dynamic rates = JsonConvert.DeserializeObject<Currencies>(response.Content).Rates;
 
                 var baseCurrencyRate = rates.GetType().GetProperty(baseCurrency);
                 double.TryParse(baseCurrencyRate.GetValue(rates).ToString(), out double baseCurrencyRateValue);
