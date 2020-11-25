@@ -1,8 +1,14 @@
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
 import { FormControl } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/AutoComplete';
 import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Grid from '@material-ui/core/Grid';
+import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/AutoComplete';
+import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import React, { useEffect, useState } from 'react';
 import './Home.css';
 
@@ -18,6 +24,9 @@ function Home() {
   const [result, setResult] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [shouldShowHelperText, setShouldShowHelperText] = useState(false);
+  const [periodSwitchChecked, setPeriodSwitchChecked] = useState(false);
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
 
   useEffect(() => {
     axios.get('https://localhost:44306/api/Currency/GetCurrencies')
@@ -30,6 +39,18 @@ function Home() {
     setAmmount(event.target.value);
   }
 
+  const handlePeriodSwitchChecked = (event) => {
+    setPeriodSwitchChecked(!periodSwitchChecked);
+  }
+
+  const handleFromDateChange = (date) => {
+    setFromDate(date);
+  }
+
+  const handleToDateChange = (date) => {
+    setToDate(date);
+  }
+
   const handleButtonClick = (event) => {
     if (checkIfEmptyFields()) {
       setShouldShowHelperText(true);
@@ -37,7 +58,7 @@ function Home() {
       return;
     }
 
-    axios.get(`https://localhost:44306/api/Currency/GetRatesByCurrency?baseCurrency=${baseCurrency}&nextCurrency=${targetCurrency}&quantity=${ammount}`)
+    axios.get(`https://localhost:44306/api/Currency/GetRatesByCurrency?baseCurrency=${baseCurrency}&targetCurrency=${targetCurrency}&quantity=${ammount}`)
       .then((response) => {
         setResult(response.data);
         setShowResult(true);
@@ -120,6 +141,45 @@ function Home() {
             : null}
         </div>
       </FormControl>
+      <div>
+        <FormControl className="form-control">
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={periodSwitchChecked}
+                  onChange={handlePeriodSwitchChecked}
+                  name="periodSwitch"
+                />
+              }
+              label="Show past history"
+            />
+          </div>
+        </FormControl>
+        {periodSwitchChecked
+          ? <FormControl>
+            <div>
+              <Grid container justify="space-around">
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <DatePicker
+                    label="From date"
+                    value={fromDate}
+                    onChange={handleFromDateChange}
+                    animateYearScrolling
+                  />
+                  <DatePicker
+                    label="To date"
+                    value={toDate}
+                    onChange={handleToDateChange}
+                    animateYearScrolling
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+            </div>
+          </FormControl>
+          : null
+        }
+      </div>
     </div>
   );
 }

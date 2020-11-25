@@ -38,6 +38,7 @@ namespace CurrencyExchange.API
             services.AddSwaggerGen();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IMongoService, MongoService>();
         }
 

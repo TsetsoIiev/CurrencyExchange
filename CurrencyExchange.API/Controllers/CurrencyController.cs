@@ -22,16 +22,16 @@ namespace CurrencyExchange.API.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public async Task<IActionResult> GetRatesByCurrency(string baseCurrency, string nextCurrency, double quantity)
+        public async Task<IActionResult> GetRatesByCurrency(string baseCurrency, string targetCurrency, double quantity)
         {
-            return Ok(await currencyService.GetRates(baseCurrency, nextCurrency, quantity));
+            return Ok(await currencyService.GetRates(baseCurrency, targetCurrency, quantity));
         }
 
         [HttpGet]
         [Route("[action]")]
-        public IActionResult GetRatesByDate(DateTime from, DateTime to)
+        public async Task<IActionResult> GetRatesByDate(string baseCurrency, string targetCurrency, DateTime from, DateTime to)
         {
-            return Ok(mongoService.GetCurrenciesForPeriod(from, to));
+            return Ok(currencyService.GetRatesForPeriod(baseCurrency, targetCurrency, from, to));
         }
 
         [HttpGet]

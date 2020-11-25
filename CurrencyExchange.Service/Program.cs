@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CurrencyExchange.Service.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Bson.Serialization;
 
 namespace CurrencyExchange.Service
 {
@@ -9,6 +11,10 @@ namespace CurrencyExchange.Service
 
         public static void Main(string[] args)
         {
+            BsonClassMap.RegisterClassMap<Currencies>(cm => {
+                cm.AutoMap();
+            });
+
             CreateHostBuilder(args).Build().Run();
         }
 

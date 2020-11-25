@@ -1,8 +1,10 @@
 ﻿using CurrencyExchange.Service.Interfaces;
 using CurrencyExchange.Service.Models;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,12 +20,12 @@ namespace CurrencyExchange.Service.Services
             this.mongoService = mongoService;
         }
 
-        public string[] GetCurrencies()
+        public IEnumerable<string> GetCurrencies()
         {
-            return new Rates().GetType().GetProperties().Select(x => x.Name).ToArray();
+            return new Rates().GetType().GetProperties().Select(x => x.Name);
         }
 
-        public async Task<double> GetRates(string baseCurrency, string toCurrency, double ammount)
+        public async Task<double> GetRates(string baseCurrency, string targetCurrency, double ammount)
         {
             var client = new RestClient($"{AppSettings.ApiEndpoint}{AppSettings.ApiEndpointLatest}");
 
@@ -33,26 +35,48 @@ namespace CurrencyExchange.Service.Services
             var response = await client.ExecuteAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                dynamic rates = JsonConvert.DeserializeObject<Currencies>(response.Content).Rates;
-
-                var baseCurrencyRate = rates.GetType().GetProperty(baseCurrency);
-                double.TryParse(baseCurrencyRate.GetValue(rates).ToString(), out double baseCurrencyRateValue);
-
-                var toCurrencyRate = rates.GetType().GetProperty(toCurrency);
-                double.TryParse(toCurrencyRate.GetValue(rates).ToString(), out double toCurrencyRateValue);
-
-                var rate = toCurrencyRateValue / baseCurrencyRateValue;
-                var finalAmmount = rate * ammount;
-
-                return Math.Round(finalAmmount, 2);
+                var rates = JsonConvert.DeserializeObject<Currencies>(response.Content).Rates;
+                return GetRatesFromCurrencies(baseCurrency, targetCurrency, rates, ammount);
             }
 
             return 0;
         }
 
-        public double[] GetRatesForPeriod(string currency, DateTime from, DateTime to)
+        public IEnumerable<RateForPeriod> GetRatesForPeriod(string baseCurrency, string targetCurrency, DateTime from, DateTime to)
         {
-            throw new NotImplementedException();
+            var collection = mongoService.GetCollection<Currencies>("currency_converter", "historical_currencies");
+
+            var filter = Builders<Currencies>.Filter.And(
+                    Builders<Currencies>.Filter.Gte("Date", from),
+                    Builders<Currencies>.Filter.Lte("Date", to)
+                );
+
+            var result = collection.Find(filter).ToList().Select(x => new RateForPeriod
+            {
+                Date = x.Date,
+                Rate = GetRatesFromCurrencies(baseCurrency, targetCurrency, x.Rates)
+            });
+
+            return result;
+        }
+
+        private double GetRatesFromCurrencies(string baseCurrency, string toCurrency, Rates rates, double ammount = 1.0)
+        {
+            var baseCurrencyRateValue = GetCurrencyRateFromCurrency(rates, baseCurrency);
+            var toCurrencyRateValue = GetCurrencyRateFromCurrency(rates, toCurrency);
+
+            var rate = toCurrencyRateValue / baseCurrencyRateValue;
+            var finalAmmount = rate * ammount;
+
+            return Math.Round(finalAmmount, 2);
+        }
+
+        private double GetCurrencyRateFromCurrency(Rates rate, string currency)
+        {
+            var baseCurrencyRate = rate.GetType().GetProperty(currency);
+            double.TryParse(baseCurrencyRate.GetValue(rate).ToString(), out double currencyRateValue);
+
+            return currencyRateValue;
         }
     }
 }

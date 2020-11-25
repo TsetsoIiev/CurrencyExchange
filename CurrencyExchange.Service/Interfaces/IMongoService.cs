@@ -1,10 +1,9 @@
-﻿using CurrencyExchange.Service.Models;
-using System;
+﻿using MongoDB.Driver;
 
 namespace CurrencyExchange.Service.Interfaces
 {
     public interface IMongoService
     {
-        Currencies[] GetCurrenciesForPeriod(DateTime from, DateTime to);
+        IMongoCollection<T> GetCollection<T>(string databaseName, string collectionName) where T : class;
     }
 }
