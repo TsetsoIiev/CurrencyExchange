@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
 import { FormControl } from '@material-ui/core';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/AutoComplete';
 import Button from '@material-ui/core/Button';
-
+import FormHelperText from '@material-ui/core/FormHelperText';
+import TextField from '@material-ui/core/TextField';
+import React, { useEffect, useState } from 'react';
 import './Home.css';
+
 
 const axios = require('axios');
 
-function Home(props) {
+function Home() {
 
   const [currencies, setCurrencies] = useState([]);
   const [baseCurrency, setBaseCurrency] = useState("");
@@ -27,14 +25,6 @@ function Home(props) {
         setCurrencies(response.data);
       });
   });
-
-  const handleBaseCurrencyChange = (event) => {
-    setBaseCurrency(event.target.value);
-  }
-
-  const handleTargetCurrencyChange = (event) => {
-    setTargetCurrency(event.target.value);
-  }
 
   const handleAmmountChange = (event) => {
     setAmmount(event.target.value);
@@ -66,18 +56,15 @@ function Home(props) {
     <div>
       <FormControl required className="form-control">
         <div className="dropdown">
-          <InputLabel id="baseCurrencyLabel">
-            Base currency
-        </InputLabel>
-          <Select
+          <Autocomplete
             id="baseCurrency"
-            labelId="baseCurrencyLabel"
+            options={currencies}
+            getOptionLabel={(option) => option}
             className="dropdown"
-            value={baseCurrency}
-            onChange={handleBaseCurrencyChange}
-          >
-            {currencies.map((currency) => (<MenuItem value={currency} key={currency}>{currency}</MenuItem>))}
-          </Select>
+            disableClearable
+            onChange={(event, newValue) => { setBaseCurrency(newValue); }}
+            renderInput={(params) => <TextField {...params} label="Base currency *" />}
+          />
         </div>
         {baseCurrency === "" && shouldShowHelperText
           ? <FormHelperText>Base currency is required</FormHelperText>
@@ -98,19 +85,15 @@ function Home(props) {
       </FormControl>
       <FormControl required className="form-control">
         <div className="dropdown">
-          <InputLabel id="targetCurrencyLabel">
-            Target currency
-          </InputLabel>
-          <Select
+          <Autocomplete
             id="targetCurrency"
-            labelId="targetCurrencyLabel"
+            options={currencies}
+            getOptionLabel={(option) => option}
             className="dropdown"
-            required={true}
-            value={targetCurrency}
-            onChange={handleTargetCurrencyChange}
-          >
-            {currencies.map((currency) => (<MenuItem value={currency} key={currency}>{currency}</MenuItem>))}
-          </Select>
+            disableClearable
+            onChange={(event, newValue) => { setTargetCurrency(newValue); }}
+            renderInput={(params) => <TextField {...params} label="Target currency *" />}
+          />
         </div>
         {targetCurrency === "" && shouldShowHelperText
           ? <FormHelperText>Target currency is required</FormHelperText>

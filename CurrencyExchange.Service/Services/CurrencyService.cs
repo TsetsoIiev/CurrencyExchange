@@ -1,11 +1,11 @@
 ﻿using CurrencyExchange.Service.Interfaces;
 using CurrencyExchange.Service.Models;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace CurrencyExchange.Service.Services
 {
@@ -23,14 +23,14 @@ namespace CurrencyExchange.Service.Services
             return new Rates().GetType().GetProperties().Select(x => x.Name).ToArray();
         }
 
-        public double GetRates(string baseCurrency, string toCurrency, double ammount)
+        public async Task<double> GetRates(string baseCurrency, string toCurrency, double ammount)
         {
             var client = new RestClient($"{AppSettings.ApiEndpoint}{AppSettings.ApiEndpointLatest}");
 
             var request = new RestRequest(Method.GET);
             request.AddQueryParameter("access_key", AppSettings.ApiAccessKey);
 
-            var response = client.Execute(request);
+            var response = await client.ExecuteAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 dynamic rates = JsonConvert.DeserializeObject<Currencies>(response.Content).Rates;

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace CurrencyExchange.Service.Interfaces
 {
     public interface ICurrencyService
     {
-        double GetRates(string baseCurrency, string toCurrency, double ammount);
+        Task<double> GetRates(string baseCurrency, string toCurrency, double ammount);
 
         double[] GetRatesForPeriod(string currency, DateTime from, DateTime to);
 

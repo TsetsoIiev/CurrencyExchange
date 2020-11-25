@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace CurrencyExchange.API.Controllers
 {
@@ -21,9 +22,9 @@ namespace CurrencyExchange.API.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public IActionResult GetRatesByCurrency(string baseCurrency, string nextCurrency, double quantity)
+        public async Task<IActionResult> GetRatesByCurrency(string baseCurrency, string nextCurrency, double quantity)
         {
-            return Ok(currencyService.GetRates(baseCurrency, nextCurrency, quantity));
+            return Ok(await currencyService.GetRates(baseCurrency, nextCurrency, quantity));
         }
 
         [HttpGet]
