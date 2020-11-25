@@ -1,17 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export class AboutUs extends Component {
-  static displayName = AboutUs.name;
+function AboutUs(props) {
 
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div>
-        <h1>About us</h1>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1>About us</h1>
+    </div>
+  );
 }
+
+export default AboutUs;

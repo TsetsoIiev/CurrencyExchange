@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormControl } from '@material-ui/core';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -10,122 +11,134 @@ import './Home.css';
 
 const axios = require('axios');
 
-export class Home extends Component {
-  static displayName = Home.name;
+function Home(props) {
 
-  constructor(props) {
-    super(props);
+  const [currencies, setCurrencies] = useState([]);
+  const [baseCurrency, setBaseCurrency] = useState("");
+  const [targetCurrency, setTargetCurrency] = useState("");
+  const [ammount, setAmmount] = useState(0);
+  const [result, setResult] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [shouldShowHelperText, setShouldShowHelperText] = useState(false);
 
-    this.state = {
-      currencies: [],
-      baseCurrency: '',
-      targetCurrency: '',
-      ammount: 0,
-      result: 0,
-      showResult: false
-    };
-
-    this.handleBaseCurrencyChange = this.handleBaseCurrencyChange.bind(this);
-    this.handleTargetCurrencyChange = this.handleTargetCurrencyChange.bind(this);
-    this.handleAmmountChange = this.handleAmmountChange.bind(this);
-    this.handleButtonClick = this.handleButtonClick.bind(this);
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     axios.get('https://localhost:44306/api/Currency/GetCurrencies')
       .then((response) => {
-        this.setState({ currencies: response.data });
-      })
-  }
-
-  handleBaseCurrencyChange(event) {
-    this.setState({ baseCurrency: event.target.value });
-  }
-
-  handleTargetCurrencyChange(event) {
-    this.setState({ targetCurrency: event.target.value });
-  }
-
-  handleAmmountChange(event) {
-    this.setState( {ammount: event.target.value });
-  }
-
-  handleButtonClick(event) {
-    axios.get(`https://localhost:44306/api/Currency/GetRatesByCurrency?baseCurrency=${this.state.baseCurrency}&nextCurrency=${this.state.targetCurrency}&quantity=${this.state.ammount}`)
-    .then((response) => {
-      this.setState({ 
-        result: response.data, 
-        showResult: true
+        setCurrencies(response.data);
       });
-    });
+  });
+
+  const handleBaseCurrencyChange = (event) => {
+    setBaseCurrency(event.target.value);
   }
 
-  render() {
-    return (
-      <div>
-        <FormControl required className="form-control">
-          <div className="dropdown">
-            <InputLabel id="baseCurrencyLabel">
-              Base currency
+  const handleTargetCurrencyChange = (event) => {
+    setTargetCurrency(event.target.value);
+  }
+
+  const handleAmmountChange = (event) => {
+    setAmmount(event.target.value);
+  }
+
+  const handleButtonClick = (event) => {
+    if (checkIfEmptyFields()) {
+      setShouldShowHelperText(true);
+
+      return;
+    }
+
+    axios.get(`https://localhost:44306/api/Currency/GetRatesByCurrency?baseCurrency=${baseCurrency}&nextCurrency=${targetCurrency}&quantity=${ammount}`)
+      .then((response) => {
+        setResult(response.data);
+        setShowResult(true);
+      });
+  }
+
+  const checkIfEmptyFields = () => {
+    if (baseCurrency === "" || targetCurrency === "" || ammount === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return (
+    <div>
+      <FormControl required className="form-control">
+        <div className="dropdown">
+          <InputLabel id="baseCurrencyLabel">
+            Base currency
         </InputLabel>
-            <Select
-              id="baseCurrency"
-              labelId="baseCurrencyLabel"
-              className="dropdown"
-              value={this.state.baseCurrency}
-              onChange={this.handleBaseCurrencyChange}
-            >
-              {this.state.currencies.map((currency) => (<MenuItem value={currency} key={currency}>{currency}</MenuItem>))}
-            </Select>
-          </div>
-        </FormControl>
-        <FormControl className="form-control">
-          <div>
-            <TextField
-              id="ammount"
-              label="Ammount"
-              required={true}
-              onChange={this.handleAmmountChange}
-            />
-          </div>
-        </FormControl>
-        <FormControl required className="form-control">
-          <div className="dropdown">
-            <InputLabel id="targetCurrencyLabel">
-              Target currency
+          <Select
+            id="baseCurrency"
+            labelId="baseCurrencyLabel"
+            className="dropdown"
+            value={baseCurrency}
+            onChange={handleBaseCurrencyChange}
+          >
+            {currencies.map((currency) => (<MenuItem value={currency} key={currency}>{currency}</MenuItem>))}
+          </Select>
+        </div>
+        {baseCurrency === "" && shouldShowHelperText
+          ? <FormHelperText>Base currency is required</FormHelperText>
+          : null}
+      </FormControl>
+      <FormControl className="form-control">
+        <div>
+          <TextField
+            id="ammount"
+            label="Ammount"
+            required={true}
+            onChange={handleAmmountChange}
+          />
+        </div>
+        {(ammount === 0 || ammount === "") && shouldShowHelperText
+          ? <FormHelperText>Ammount is required</FormHelperText>
+          : null}
+      </FormControl>
+      <FormControl required className="form-control">
+        <div className="dropdown">
+          <InputLabel id="targetCurrencyLabel">
+            Target currency
           </InputLabel>
-            <Select
-              id="targetCurrency"
-              labelId="targetCurrencyLabel"
-              className="dropdown"
-              required={true}
-              value={this.state.targetCurrency}
-              onChange={this.handleTargetCurrencyChange}
-            >
-              {this.state.currencies.map((currency) => (<MenuItem value={currency} key={currency}>{currency}</MenuItem>))}
-            </Select>
-          </div>
-        </FormControl>
-        <FormControl className="form-control">
-          <div>
-            <Button 
-              variant="contained"
-              onClick={this.handleButtonClick}
-              >Default</Button>
-          </div>
-        </FormControl>
-        <FormControl className="form-control">
-          <div>
-          { this.state.showResult 
-          ? <TextField
+          <Select
+            id="targetCurrency"
+            labelId="targetCurrencyLabel"
+            className="dropdown"
+            required={true}
+            value={targetCurrency}
+            onChange={handleTargetCurrencyChange}
+          >
+            {currencies.map((currency) => (<MenuItem value={currency} key={currency}>{currency}</MenuItem>))}
+          </Select>
+        </div>
+        {targetCurrency === "" && shouldShowHelperText
+          ? <FormHelperText>Target currency is required</FormHelperText>
+          : null}
+      </FormControl>
+      <FormControl className="form-control">
+        <div>
+          <Button
+            variant="contained"
+            onClick={handleButtonClick}
+          >
+            Calculate
+            </Button>
+        </div>
+      </FormControl>
+      <FormControl className="form-control">
+        <div>
+          {showResult
+            ? <TextField
               id="result"
               label="Result"
-              value={this.state.result}
-            /> 
-          : null }
-          </div>
-        </FormControl>
-      </div>
-    );
-  }
+              value={result}
+            />
+            : null}
+        </div>
+      </FormControl>
+    </div>
+  );
 }
+
+export default Home;
