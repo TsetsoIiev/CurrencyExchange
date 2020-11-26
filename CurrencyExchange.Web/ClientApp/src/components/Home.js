@@ -1,7 +1,7 @@
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
-import { FormControl } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
@@ -12,10 +12,26 @@ import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import React, { useEffect, useState } from 'react';
 import './Home.css';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    paddingTop: 64
+  },
+  input: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+  },
+  btn: {
+    top: `25%`,
+    left: `25%`
+  }
+}));
+
 
 const axios = require('axios');
 
 function Home() {
+  const classes = useStyles();
 
   const [currencies, setCurrencies] = useState([]);
   const [baseCurrency, setBaseCurrency] = useState("");
@@ -74,113 +90,107 @@ function Home() {
   }
 
   return (
-    <div>
-      <FormControl required className="form-control">
-        <div className="dropdown">
-          <Autocomplete
-            id="baseCurrency"
-            options={currencies}
-            getOptionLabel={(option) => option}
-            className="dropdown"
-            disableClearable
-            onChange={(event, newValue) => { setBaseCurrency(newValue); }}
-            renderInput={(params) => <TextField {...params} label="Base currency *" />}
-          />
-        </div>
-        {baseCurrency === "" && shouldShowHelperText
-          ? <FormHelperText>Base currency is required</FormHelperText>
-          : null}
-      </FormControl>
-      <FormControl className="form-control">
-        <div>
-          <TextField
-            id="ammount"
-            label="Ammount"
-            required={true}
-            onChange={handleAmmountChange}
-          />
-        </div>
-        {(ammount === 0 || ammount === "") && shouldShowHelperText
-          ? <FormHelperText>Ammount is required</FormHelperText>
-          : null}
-      </FormControl>
-      <FormControl required className="form-control">
-        <div className="dropdown">
-          <Autocomplete
-            id="targetCurrency"
-            options={currencies}
-            getOptionLabel={(option) => option}
-            className="dropdown"
-            disableClearable
-            onChange={(event, newValue) => { setTargetCurrency(newValue); }}
-            renderInput={(params) => <TextField {...params} label="Target currency *" />}
-          />
-        </div>
-        {targetCurrency === "" && shouldShowHelperText
-          ? <FormHelperText>Target currency is required</FormHelperText>
-          : null}
-      </FormControl>
-      <FormControl className="form-control">
-        <div>
-          <Button
-            variant="contained"
-            onClick={handleButtonClick}
-          >
-            Calculate
-            </Button>
-        </div>
-      </FormControl>
-      <FormControl className="form-control">
-        <div>
-          {showResult
-            ? <TextField
-              id="result"
-              label="Result"
-              value={result}
-            />
-            : null}
-        </div>
-      </FormControl>
+    <div className={classes.root}>
       <div>
-        <FormControl className="form-control">
-          <div>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={periodSwitchChecked}
-                  onChange={handlePeriodSwitchChecked}
-                  name="periodSwitch"
-                />
-              }
-              label="Show past history"
+        <Grid container>
+          <Grid item xs={3}>
+            <Autocomplete
+              id="baseCurrency"
+              options={currencies}
+              getOptionLabel={(option) => option}
+              disableClearable
+              className={classes.input}
+              onChange={(event, newValue) => { setBaseCurrency(newValue); }}
+              renderInput={(params) => <TextField {...params} label="Base currency *" />}
             />
-          </div>
-        </FormControl>
+            {baseCurrency === "" && shouldShowHelperText
+              ? <FormHelperText>Base currency is required</FormHelperText>
+              : null}
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              id="ammount"
+              label="Ammount"
+              className={classes.input}
+              required={true}
+              onChange={handleAmmountChange}
+            />
+            {(ammount === 0 || ammount === "") && shouldShowHelperText
+              ? <FormHelperText>Ammount is required</FormHelperText>
+              : null}
+          </Grid>
+          <Grid item xs={3}>
+            <Autocomplete
+              id="targetCurrency"
+              options={currencies}
+              getOptionLabel={(option) => option}
+              disableClearable
+              className={classes.input}
+              onChange={(event, newValue) => { setTargetCurrency(newValue); }}
+              renderInput={(params) => <TextField {...params} label="Target currency *" />}
+            />
+            {targetCurrency === "" && shouldShowHelperText
+              ? <FormHelperText>Target currency is required</FormHelperText>
+              : null}
+          </Grid>
+          <Grid item xs={3}>
+            <Button
+              variant="contained"
+              className={classes.input, classes.btn}
+              onClick={handleButtonClick}
+            >
+              Calculate
+            </Button>
+          </Grid>
+          <Grid item xs={3}>
+            {showResult
+              ? <TextField
+                id="result"
+                label="Result"
+                className={classes.input}
+                value={result}
+              />
+              : null}
+          </Grid>
+        </Grid>
+      </div>
+      <Grid container>
+        <Grid item xs={4}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={periodSwitchChecked}
+                onChange={handlePeriodSwitchChecked}
+                name="periodSwitch"
+              />
+            }
+            label="Show past history"
+          />
+        </Grid>
         {periodSwitchChecked
-          ? <FormControl>
-            <div>
-              <Grid container justify="space-around">
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <DatePicker
-                    label="From date"
-                    value={fromDate}
-                    onChange={handleFromDateChange}
-                    animateYearScrolling
-                  />
-                  <DatePicker
-                    label="To date"
-                    value={toDate}
-                    onChange={handleToDateChange}
-                    animateYearScrolling
-                  />
-                </MuiPickersUtilsProvider>
-              </Grid>
-            </div>
-          </FormControl>
+          ?
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid item xs={4}>
+              <DatePicker
+                label="From date"
+                value={fromDate}
+                onChange={handleFromDateChange}
+                animateYearScrolling
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <DatePicker
+                label="To date"
+                value={toDate}
+                onChange={handleToDateChange}
+                animateYearScrolling
+              />
+            </Grid>
+          </MuiPickersUtilsProvider>
           : null
         }
-      </div>
-    </div>
+      </Grid>
+    </div >
   );
 }
 
