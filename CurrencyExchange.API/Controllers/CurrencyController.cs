@@ -13,12 +13,10 @@ namespace CurrencyExchange.API.Controllers
     public class CurrencyController : ControllerBase
     {
         private readonly ICurrencyService currencyService;
-        private readonly IMongoService mongoService;
 
-        public CurrencyController(ICurrencyService currencyService, IMongoService mongoService)
+        public CurrencyController(ICurrencyService currencyService)
         {
             this.currencyService = currencyService;
-            this.mongoService = mongoService;
         }
 
         [HttpGet]

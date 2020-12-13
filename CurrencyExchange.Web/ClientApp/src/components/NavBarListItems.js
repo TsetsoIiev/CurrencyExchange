@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
     },
     textDark: {
         color: 'black'
+    },
+    btnLeft: {
+        right: 12
     }
 }));
 
@@ -26,7 +29,7 @@ export default function NavBarListItems() {
         <div>
             <Container>
                 <NavLink tag={Link} className={classes.navLink} to="/">
-                    <ListItem button>
+                    <ListItem button className={classes.btnLeft}>
                         <ListItemIcon>
                             <HomeIcon />
                         </ListItemIcon>
@@ -34,7 +37,7 @@ export default function NavBarListItems() {
                     </ListItem>
                 </NavLink>
                 <NavLink tag={Link} className={classes.navLink} to="/about-us" >
-                    <ListItem button>
+                    <ListItem button className={classes.btnLeft}>
                         <ListItemIcon>
                             <InfoIcon />
                         </ListItemIcon>
@@ -42,7 +45,7 @@ export default function NavBarListItems() {
                     </ListItem>
                 </NavLink>
                 <NavLink tag={Link} className={classes.navLink} to="/contact-us">
-                    <ListItem button>
+                    <ListItem button className={classes.btnLeft}>
                         <ListItemIcon>
                             <MessageIcon />
                         </ListItemIcon>

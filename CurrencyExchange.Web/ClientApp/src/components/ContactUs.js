@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 
 const axios = require('axios');
@@ -10,6 +11,23 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     paddingTop: 64
+  },
+  grid: {
+    display: "inline-flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "cetner"
+  },
+  item: {
+    paddingTop: "2%",
+    paddingBottom: "2%"
+  },
+  paper: {
+    padding: "2%"
+  },
+  label: {
+    paddingTop: "1%",
+    paddingBottom: "1%"
   }
 }));
 
@@ -17,16 +35,15 @@ function ContactUs(props) {
   const classes = useStyles();
 
   const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
 
   const handleMessageChange = (event) => {
-    setMessage(event.target.value);
-  }
+    if (event.target.value.length > 200) {
+      return;
+    }
 
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
+    setMessage(event.target.value);
   }
 
   const handleEmailChange = (event) => {
@@ -39,7 +56,6 @@ function ContactUs(props) {
 
   const handleButtonClick = (event) => {
     var data = {
-      title: title,
       email: email,
       name: name,
       message: message
@@ -53,50 +69,50 @@ function ContactUs(props) {
 
   return (
     <div className={classes.root}>
-      <div>
-        <h1 id="tableLabel" >Send us a message</h1>
-      </div>
-      <Grid container>
-        <Grid item>
-          <TextField
-            id="message-title"
-            label="Message title"
-            required={true}
-            onChange={handleTitleChange}
-          />
+      <Grid container className={classes.grid}>
+        <Grid item className={classes.label} >
+          <h3 id="tableLabel" >Send us a message</h3>
         </Grid>
-        <Grid item>
-          <TextField
-            id="name"
-            label="name"
-            required={true}
-            onChange={handleNameChange}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            id="email"
-            label="Email"
-            required={true}
-            onChange={handleEmailChange}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            id="message"
-            label="Message"
-            required={true}
-            onChange={handleMessageChange}
-          />
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            onClick={handleButtonClick}
-          >
-            Submit message
+        <Paper className={classes.paper}>
+          <Grid item className={classes.item}>
+            <TextField
+              id="name"
+              label="Name"
+              variant="outlined"
+              required={true}
+              onChange={handleNameChange}
+            />
+          </Grid>
+          <Grid item className={classes.item}>
+            <TextField
+              id="email"
+              label="Email"
+              variant="outlined"
+              required={true}
+              onChange={handleEmailChange}
+            />
+          </Grid>
+          <Grid item className={classes.item}>
+            <TextField
+              id="message"
+              label="Message"
+              variant="outlined"
+              value={message}
+              required={true}
+              multiline
+              rows={6}
+              onChange={handleMessageChange}
+            />
+          </Grid>
+          <Grid item className={classes.item}>
+            <Button
+              variant="contained"
+              onClick={handleButtonClick}
+            >
+              Submit message
           </Button>
-        </Grid>
+          </Grid>
+        </Paper>
       </Grid>
     </div>
   );

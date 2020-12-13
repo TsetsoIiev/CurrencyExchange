@@ -53,7 +53,7 @@ namespace CurrencyExchange.Service.Services
 
             var result = collection.Find(filter).ToList().Select(x => new RateForPeriod
             {
-                Date = x.Date,
+                Date = x.Date.ToString("dd/MM/yyyy"),
                 Rate = GetRatesFromCurrencies(baseCurrency, targetCurrency, x.Rates)
             });
 
@@ -68,7 +68,7 @@ namespace CurrencyExchange.Service.Services
             var rate = toCurrencyRateValue / baseCurrencyRateValue;
             var finalAmmount = rate * ammount;
 
-            return Math.Round(finalAmmount, 2);
+            return Math.Round(finalAmmount, 4);
         }
 
         private double GetCurrencyRateFromCurrency(Rates rate, string currency)

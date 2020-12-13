@@ -14,14 +14,20 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NavBarListItems from './NavBarListItems';
 
+import { ReactComponent as ReactLogo } from '../logo.svg';
+
 import './NavMenu.css';
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     overflowX: 'hidden'
+  },
+  svg: {
+    height: 24,
+    width: 12
   },
   toolbar: {
     paddingRight: 24,
@@ -50,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
+    paddingLeft: 8
   },
   menuButtonHidden: {
     display: 'none',
@@ -97,6 +104,13 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  drawer: {
+    width: 136
+  },
+  logo: {
+    width: 20,
+    height: 40
+  }
 }));
 
 export default function NavMenu(props) {
@@ -129,6 +143,7 @@ export default function NavMenu(props) {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Currency converter
           </Typography>
+          <ReactLogo className={classes.logo} />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -136,6 +151,7 @@ export default function NavMenu(props) {
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
+        className={classes.drawer}
         open={open}
       >
         <div className={classes.toolbarIcon}>
